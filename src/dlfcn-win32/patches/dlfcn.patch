@@ -1,0 +1,29 @@
+--- x	2014-11-30 09:37:31.155969257 +0100
++++ dlfcn.c	2014-11-30 10:09:16.495971614 +0100
+@@ -102,10 +102,8 @@
+ 
+ /* POSIX says dlerror( ) doesn't have to be thread-safe, so we use one
+  * static buffer.
+- * MSDN says the buffer cannot be larger than 64K bytes, so we set it to
+- * the limit.
+  */
+-static char error_buffer[65535];
++static char error_buffer[1024];
+ static char *current_error;
+ 
+ static int copy_string( char *dest, int dest_size, const char *src )
+@@ -209,13 +207,7 @@
+         }
+         lpFileName[i] = '\0';
+ 
+-        /* POSIX says the search path is implementation-defined.
+-         * LOAD_WITH_ALTERED_SEARCH_PATH is used to make it behave more closely
+-         * to UNIX's search paths (start with system folders instead of current
+-         * folder).
+-         */
+-        hModule = LoadLibraryEx( (LPSTR) lpFileName, NULL, 
+-                                 LOAD_WITH_ALTERED_SEARCH_PATH );
++        hModule = LoadLibraryEx( (LPSTR) lpFileName, NULL, 0 );
+ 
+         /* If the object was loaded with RTLD_GLOBAL, add it to list of global
+          * objects, so that its symbols may be retrieved even if the handle for
