@@ -22,8 +22,8 @@ download "libjpeg" "http://www.ijg.org/files/jpegsrc.v9a.tar.gz" \
 download "zlib" "http://zlib.net/zlib-1.2.8.tar.gz" \
   "" "sha256" "36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d"
 
-download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpng-1.6.17.tar.xz" \
-  "" "sha256" "98507b55fbe5cd43c51981f2924e4671fd81fe35d52dc53357e20f2c77fa5dfd"
+download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpng-1.6.19.tar.xz" \
+  "" "sha256" "311c5657f53516986c67713c946f616483e3cdb52b8b2ee26711be74e8ac35e8"
 
 # SDL
 if [ $PACKAGE == "SDL2" ]; then

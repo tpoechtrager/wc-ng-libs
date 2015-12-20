@@ -3,7 +3,7 @@
 pushd "${0%/*}/../target" &>/dev/null
 
 LIB=$1
-LIBDIR=$PWD/../lib
+LIBDIR=$PWD/../..
 
 function strip_lib()
 {

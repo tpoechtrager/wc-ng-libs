@@ -5,15 +5,15 @@ PACKAGE="curl"
 . ${0%/*}/../common/common.inc.sh
 
 if [ -z "$SSLLIB" ]; then
-    SSLLIB="openssl"
+    SSLLIB="libressl"
 fi
 
 if [ ! -e "$TARGET_DIR/lib/libssl.a" ]; then
     sh -c "$ROOTDIR/$SSLLIB/build.sh"
 fi
 
-download "curl" "http://curl.haxx.se/download/curl-7.42.1.tar.bz2" \
-  "" "sha256" "e2905973391ec2dfd7743a8034ad10eeb58dab8b3a297e7892a41a7999cac887"
+download "curl" "http://curl.haxx.se/download/curl-7.46.0.tar.bz2" \
+  "" "sha256" "b7d726cdd8ed4b6db0fa1b474a3c59ebbbe4dcd4c61ac5e7ade0e0270d3195ad"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"
