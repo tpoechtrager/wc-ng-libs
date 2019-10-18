@@ -9,32 +9,32 @@ fi
 . ${0%/*}/../common/common.inc.sh
 
 # SDL_mixer deps
-download "libogg" "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz" \
-  "" "sha256" "3f687ccdd5ac8b52d76328fbbfebc70c459a40ea891dbf3dccb74a210826e79b"
+download "libogg" "http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.xz" \
+  "" "sha256" "c163bc12bc300c401b6aa35907ac682671ea376f13ae0969a220f7ddf71893fe"
 
 download "libvorbis" "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.tar.xz" \
   "" "sha256" "2f05497d29195dc23ee952a24ee3973a74e6277569c4c2eca0ec5968e541f372"
 
 # SDL_image deps
-download "libjpeg" "http://www.ijg.org/files/jpegsrc.v9a.tar.gz" \
-  "" "sha256" "3a753ea48d917945dd54a2d97de388aa06ca2eb1066cbfdc6652036349fe05a7"
+download "libjpeg" "http://www.ijg.org/files/jpegsrc.v9c.tar.gz" \
+  "" "sha256" "650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122"
 
-download "zlib" "http://zlib.net/zlib-1.2.8.tar.gz" \
-  "" "sha256" "36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d"
+download "zlib" "http://zlib.net/zlib-1.2.11.tar.gz" \
+  "" "sha256" "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1"
 
-download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpng-1.6.19.tar.xz" \
-  "" "sha256" "311c5657f53516986c67713c946f616483e3cdb52b8b2ee26711be74e8ac35e8"
+download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpng-1.6.37.tar.xz" \
+  "" "sha256" "505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca"
 
 # SDL
 if [ $PACKAGE == "SDL2" ]; then
-  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.3.tar.gz" \
-    "" "sha256" "a5a69a6abf80bcce713fa873607735fe712f44276a7f048d60a61bb2f6b3c90c"
+  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.10.tar.gz" \
+    "" "sha256" "b4656c13a1f0d0023ae2f4a9cf08ec92fffb464e0f24238337784159b8b91d57"
 
-  download "sdl2_image" "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.0.tar.gz" \
-    "" "sha256" "b29815c73b17633baca9f07113e8ac476ae66412dec0d29a5045825c27a47234"
+  download "sdl2_image" "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz" \
+    "" "sha256" "bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0"
 
-  download "sdl2_mixer" "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.tar.gz" \
-    "" "sha256" "a8ce0e161793791adeff258ca6214267fdd41b3c073d2581cd5265c8646f725b"
+  download "sdl2_mixer" "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4.tar.gz" \
+    "" "sha256" "b4cf5a382c061cd75081cf246c2aa2f9df8db04bdda8dcdc6b6cca55bede2419"
 else
   download "sdl" "https://www.libsdl.org/release/SDL-1.2.15.tar.gz" \
     "" "sha256" "d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00"
@@ -71,6 +71,7 @@ extract_archives
 echo_action "building libogg"
 pushd libogg*
 patch -p0 < $PATCH_DIR/ogg-configure.patch
+patch -p0 < $PATCH_DIR/ogg-darwin.patch
 test $ISOSX -eq 1 && patch -p0 < $PATCH_DIR/ogg-osx-cflags.patch
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS --with-pic
 $MAKE -j $JOBS install
@@ -122,10 +123,12 @@ popd
 
 ###########    SDL    ###########
 echo_action "building SDL"
-pushd SDL*-*
+pushd $(echo SDL*-* | tr ' ' '\n' | grep -v image | grep -v mixer)
 CONFIGURE_FLAGS_OLD=$CONFIGURE_FLAGS
 if [ $PACKAGE == "SDL" ]; then
   patch -p1 < $PATCH_DIR/sdl-xdata32.patch
+else
+  patch -p0 < $PATCH_DIR/sdl2-darwin.patch
 fi
 if [ $ISOSX -eq 1 ]; then
   CONFIGURE_FLAGS+=" --with-x=no"
@@ -175,7 +178,7 @@ pushd SDL*image*
   --disable-sdltest --with-pic
 if [ $PACKAGE == "SDL2" ]; then
   sed -i'' -e "s/PROGRAMS = \$(noinst_PROGRAMS)//g" $TARGET_DIR/bin/sdl2-config
-  make -j $JOBS
+  make -j $JOBS libSDL2_image.la
 else
   make -j $JOBS libSDL_image.la
 fi

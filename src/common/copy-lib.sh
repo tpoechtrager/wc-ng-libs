@@ -17,7 +17,7 @@ function strip_lib()
         *ios*)
             arm-apple-darwin11-strip $2 ;;
         freebsd64)
-            amd64-pc-freebsd10.1-strip --strip-unneeded $2 ;;
+            amd64-pc-freebsd13.0-strip --strip-unneeded $2 ;;
         mingw32 | w32-clang)
             i686-w64-mingw32-strip --strip-unneeded $2 ;;
         mingw64 | w64-clang)

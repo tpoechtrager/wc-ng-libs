@@ -4,10 +4,10 @@ PACKAGE="openssl"
 
 . ${0%/*}/../common/common.inc.sh
 
-download "openssl" "https://www.openssl.org/source/openssl-1.0.2e.tar.gz" \
-  "" "sha256" "e23ccafdb75cfcde782da0151731aa2185195ac745eea3846133f2e05c0e0bff"
+download "openssl" "https://www.openssl.org/source/openssl-1.0.2t.tar.gz" \
+  "" "sha1" "8ac3fd379cf8c8ef570abb51ec52a88fd526f88a"
 
-CONFIGURE_FLAGS="no-shared no-idea no-mdc2 no-rc4 no-rc5 no-zlib enable-tlsext no-ssl2 "
+CONFIGURE_FLAGS="no-shared no-rc5 no-zlib enable-tlsext no-ssl2 "
 
 if [ $ISMINGW -eq 1 ]; then
     if [ $IS64BIT -eq 1 ]; then
@@ -53,9 +53,9 @@ if [ -z "$AR" ]; then
     AR="ar"
 fi
 
-if [ $ISWCLANG -eq 1 ]; then
-    CC+=" -no-integrated-as"
-fi
+#if [ $ISWCLANG -eq 1 ]; then
+#    CC+=" -no-integrated-as"
+#fi
 
 CC+=" $CFLAGS"
 

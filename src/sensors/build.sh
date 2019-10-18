@@ -8,8 +8,8 @@ PACKAGE_TARGETS="linux32 linux64"
 have_prog "flex" 1
 have_prog "bison" 1
 
-download "sensors" "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-3.3.5.tar.bz2" \
-  "" "sha256" "5dae6a665e1150159a93743c4ff1943a7efe02cd9d3bb12c4805e7d7adcf4fcf"
+download "sensors" "https://ftp.gwdg.de/pub/linux/misc/lm-sensors/lm_sensors-3.4.0.tar.bz2" \
+  "" "sha256" "e0579016081a262dd23eafe1d22b41ebde78921e73a1dcef71e05e424340061f"
 
 extract_archives
 

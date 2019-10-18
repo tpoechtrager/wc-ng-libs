@@ -379,7 +379,7 @@ else
 fi
 
 if [ $ISOSX -eq 1 ]; then
-    export MACOSX_DEPLOYMENT_TARGET=10.5
+    export MACOSX_DEPLOYMENT_TARGET=10.6
 fi
 
 if [ $ISOSX -eq 1 -a $NATIVE_PLATFORM != "Darwin" -a -z "$HOSTPREFIX" ];
