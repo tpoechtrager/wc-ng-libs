@@ -18,6 +18,7 @@ for target in $TARGET; do
   build dlfcn-win32
   build openssl
   build curl
+  build maxminddb
   #build geoip
   #build mpdclient
   #build pcre
