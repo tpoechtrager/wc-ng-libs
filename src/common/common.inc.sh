@@ -226,7 +226,7 @@ ISMINGW=0
 ISWCLANG=0
 
 case $TARGET in
-    linux32|linux64)
+    linux32|linux64|linux-arm32|linux-arm64)
         PLATFORM="Linux"
         ISLINUX=1 ;;
     osx32|osx64|osx64h)
@@ -318,19 +318,27 @@ ISARMV7S=0
 ISARM64=0
 
 if [[ "$TARGET" == *armv6 ]]; then
-    ARCHFLAG="-arch armv6"
+    [ $ISOSX -eq 1 ] && ARCHFLAG="-arch armv6"
     ISARMV6=1
 elif [[ "$TARGET" == *armv7s ]]; then
-    ARCHFLAG="-arch armv7s"
+    [ $ISOSX -eq 1 ] && ARCHFLAG="-arch armv7s"
     ISARMV7S=1
-elif [[ "$TARGET" == *armv7 ]]; then
-    ARCHFLAG="-arch armv7"
+elif [[ "$TARGET" == *armv7 ]] || [[ "$TARGET" == *arm32 ]]; then
+    if [ $ISOSX -eq 1 ]; then
+        ARCHFLAG="-arch armv7"
+    else
+        true #ARCHFLAG="-m32"
+    fi
     ISARMV7=1
 elif [[ "$TARGET" == *arm64 ]]; then
-    ARCHFLAG="-arch arm64"
+    if [ $ISOSX -eq 1 ]; then
+        ARCHFLAG="-arch arm64e"
+    else
+        true # ARCHFLAG="-m64"
+    fi
     ISARM64=1
 elif [[ "$TARGET" == *64h ]]; then
-    ARCHFLAG="-arch x86_64h"
+    [ $ISOSX -eq 1 ] && ARCHFLAG="-arch x86_64h"
     IS64BIT=1
 elif [[ "$TARGET" == *64* ]]; then
     ARCHFLAG="-m64"
@@ -348,9 +356,9 @@ CXXFLAGS+=" $ARCHFLAG"
 LDFLAGS+=" $ARCHFLAG"
 
 if [ $ISIOS -eq 1 ]; then
-    CFLAGS+=" -mios-version-min=4.2"
-    CXXFLAGS+=" -mios-version-min=4.2"
-    LDFLAGS+=" -mios-version-min=4.2"
+    CFLAGS+=" -mios-version-min=10"
+    CXXFLAGS+=" -mios-version-min=10"
+    LDFLAGS+=" -mios-version-min=10"
 fi
 
 if [ $ISWCLANG -ne 0 ]; then
@@ -521,7 +529,7 @@ if [ -z "$HOSTPREFIX" ] && [ $ISCLANG -eq 1 ]; then
 fi
 
 if [ -n "$ENABLE_LTO" ]; then
-    LTOFLAG="-flto"
+    LTOFLAG="-flto=thin"
 
     if [[ $CC == *icc* ]]; then
         LTOFLAG="-ipo"

@@ -18,6 +18,10 @@ extract_archives
 pushd libmaxminddb*
 echo_action "building maxminddb"
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS
+echo "#undef MMDB_UINT128_USING_MODE"       >> include/maxminddb_config.h
+echo "#undef MMDB_UINT128_IS_BYTE_ARRAY"    >> include/maxminddb_config.h
+echo "#define MMDB_UINT128_USING_MODE 0"    >> include/maxminddb_config.h
+echo "#define MMDB_UINT128_IS_BYTE_ARRAY 1" >> include/maxminddb_config.h
 pushd src
 $MAKE -j $JOBS install
 popd
