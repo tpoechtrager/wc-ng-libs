@@ -35,6 +35,9 @@ if [ $PACKAGE == "SDL2" ]; then
 
   download "sdl2_mixer" "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4.tar.gz" \
     "" "sha256" "b4cf5a382c061cd75081cf246c2aa2f9df8db04bdda8dcdc6b6cca55bede2419"
+
+  download "sdl2_net" "https://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.1.tar.gz" \
+    "" "sha256" "15ce8a7e5a23dafe8177c8df6e6c79b6749a03fff1e8196742d3571657609d21"
 else
   download "sdl" "https://www.libsdl.org/release/SDL-1.2.15.tar.gz" \
     "" "sha256" "d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00"
@@ -123,14 +126,14 @@ popd
 
 ###########    SDL    ###########
 echo_action "building SDL"
-pushd $(echo SDL*-* | tr ' ' '\n' | grep -v image | grep -v mixer)
+pushd $(echo SDL*-* | tr ' ' '\n' | grep -v image | grep -v mixer|head -n1)
 CONFIGURE_FLAGS_OLD=$CONFIGURE_FLAGS
 if [ $PACKAGE == "SDL" ]; then
   patch -p1 < $PATCH_DIR/sdl-xdata32.patch
 else
   patch -p0 < $PATCH_DIR/sdl2-darwin.patch
 fi
-if [ $ISOSX -eq 1 ]; then
+if [ $ISOSX -eq 1 -o $ISARM -eq 1 ]; then
   CONFIGURE_FLAGS+=" --with-x=no"
 fi
 ./autogen.sh &>/dev/null
@@ -140,6 +143,38 @@ if [ $ISFBSD -eq 1 -a "$PLATFORM" != "$NATIVE_PLATFORM" ]; then
              sed "s/\"//g" -))/../local/lib"
   sed -i'' -e 's|host_lib_path=""|host_lib_path="'$X11PATH'"|g' configure
 fi
+if [ -n "$HUAWEI_TOOL" ]; then
+  rm src/dynapi/SDL_dynapi.h
+  echo "#define SDL_DYNAMIC_API 0" > src/dynapi/SDL_dynapi.h
+  ./configure \
+    --prefix=$TARGET_DIR \
+     $CONFIGURE_FLAGS \
+    --disable-atomic \
+    --disable-video \
+    --disable-audio \
+    --disable-render \
+    --disable-events \
+    --disable-joystick \
+    --disable-haptic \
+    --disable-sensor \
+    --disable-power \
+    --disable-filesystem \
+    --disable-threads \
+    --disable-timers \
+    --disable-file \
+    --disable-loadso \
+    --disable-cpuinfo \
+    --disable-assembly \
+    --enable-assertions=release \
+    --disable-render-d3d \
+    --disable-video-vulkan \
+    --disable-video-dummy \
+    --enable-libudev=no \
+    --enable-dbus=no \
+    --enable-input-tslib=no \
+    --with-x=no \
+    --with-pic
+else
 ./configure \
   --prefix=$TARGET_DIR $CONFIGURE_FLAGS \
   --enable-video-directfb=no --enable-video-svga=no \
@@ -151,6 +186,7 @@ fi
   --enable-libudev=no --enable-dbus=no \
   --enable-input-tslib=no --enable-render-d3d=no \
   --enable-x11-shared --with-pic
+fi
 CONFIGURE_FLAGS=$CONFIGURE_FLAGS_OLD
 $MAKE -j $JOBS install
 if [ $PACKAGE == "SDL2" ]; then
@@ -217,6 +253,18 @@ if [ -n "$AR" ]; then
   mkdir -p $TARGET_DIR/include/$PACKAGE
   $INSTALL -p -D SDL*.h $TARGET_DIR/include/$PACKAGE
 fi
+popd
+
+########### SDL_net ###########
+
+# SDL_net
+
+echo_action "building SDL_net"
+pushd SDL*net*
+./configure \
+  --prefix=$TARGET_DIR $CONFIGURE_FLAGS
+sed -i'' -e "s/am__EXEEXT_1/#am__EXEEXT_1/g" Makefile
+make -j $JOBS install
 popd
 
 finish_libs

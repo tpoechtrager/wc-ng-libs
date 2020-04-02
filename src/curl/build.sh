@@ -4,12 +4,18 @@ PACKAGE="curl"
 
 . ${0%/*}/../common/common.inc.sh
 
-if [ -z "$SSLLIB" ]; then
-    SSLLIB="openssl"
-fi
+if [ -z "$HUAWEI_TOOL" ]; then
+    if [ -z "$SSLLIB" ]; then
+        SSLLIB="openssl"
+    fi
 
-if [ ! -e "$TARGET_DIR/lib/libcrypto.a" ]; then
-    sh -c "$ROOTDIR/$SSLLIB/build.sh"
+    if [ ! -e "$TARGET_DIR/lib/libcrypto.a" ]; then
+        sh -c "$ROOTDIR/$SSLLIB/build.sh"
+    fi
+
+    CONFIGURE_FLAGS+=" --with-ssl"
+else
+    CONFIGURE_FLAGS+=" --without-ssl"
 fi
 
 download "curl" "http://curl.haxx.se/download/curl-7.66.0.tar.gz" \
@@ -30,20 +36,21 @@ extract_archives
 pushd curl*
 echo_action "building curl"
 LDFLAGS="$LDFLAGS" \
-./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS \
+./configure \
+    --prefix=$TARGET_DIR \
     --enable-threaded-resolver \
     --disable-manual \
     --disable-ldap \
     --disable-ldaps \
     --disable-rtsp \
-    --with-ssl \
     --without-libssh2 \
     --without-libidn \
     --without-librtmp \
     --without-brotli \
     --without-libidn2 \
     --without-winidn \
-    --without-libpsl
+    --without-libpsl \
+    $CONFIGURE_FLAGS
 pushd lib
 $MAKE -j $JOBS install
 popd

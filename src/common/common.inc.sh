@@ -118,7 +118,7 @@ function download()
             echo_bold "downloading $2"
         fi
 
-        wget $wget_opts "$2"
+        wget $wget_opts "$2" -O $(basename $2)
 
         if [ -n "$4" ]; then
             have_prog "openssl" 1
@@ -302,6 +302,7 @@ export PKG_CONFIG=false
 unset INCLUDE
 
 ISCROSS=0
+ISOSXCROSS=0
 STRIP=strip
 RANLIB=ranlib
 CROSSTOOLS=""
@@ -312,6 +313,7 @@ JOBS=${JOBS:=$(../../common/get_cpu_count.sh)}
 ARCHFLAG=""
 IS32BIT=0
 IS64BIT=0
+ISARM=0
 ISARMV6=0
 ISARMV7=0
 ISARMV7S=0
@@ -320,9 +322,11 @@ ISARM64=0
 if [[ "$TARGET" == *armv6 ]]; then
     [ $ISOSX -eq 1 ] && ARCHFLAG="-arch armv6"
     ISARMV6=1
+    ISARM=1
 elif [[ "$TARGET" == *armv7s ]]; then
     [ $ISOSX -eq 1 ] && ARCHFLAG="-arch armv7s"
     ISARMV7S=1
+    ISARM=1
 elif [[ "$TARGET" == *armv7 ]] || [[ "$TARGET" == *arm32 ]]; then
     if [ $ISOSX -eq 1 ]; then
         ARCHFLAG="-arch armv7"
@@ -330,13 +334,23 @@ elif [[ "$TARGET" == *armv7 ]] || [[ "$TARGET" == *arm32 ]]; then
         true #ARCHFLAG="-m32"
     fi
     ISARMV7=1
+    ISARM=1
 elif [[ "$TARGET" == *arm64 ]]; then
     if [ $ISOSX -eq 1 ]; then
-        ARCHFLAG="-arch arm64e"
+        ARCHFLAG="-arch arm64"
     else
         true # ARCHFLAG="-m64"
     fi
     ISARM64=1
+    ISARM=1
+elif [[ "$TARGET" == *arm64e ]]; then
+    if [ $ISOSX -eq 1 ]; then
+        ARCHFLAG="-arch arm64e"
+    else
+        exit 1
+    fi
+    ISARM64=1
+    ISARM=1
 elif [[ "$TARGET" == *64h ]]; then
     [ $ISOSX -eq 1 ] && ARCHFLAG="-arch x86_64h"
     IS64BIT=1
@@ -356,9 +370,27 @@ CXXFLAGS+=" $ARCHFLAG"
 LDFLAGS+=" $ARCHFLAG"
 
 if [ $ISIOS -eq 1 ]; then
-    CFLAGS+=" -mios-version-min=10"
-    CXXFLAGS+=" -mios-version-min=10"
-    LDFLAGS+=" -mios-version-min=10"
+    if [[ "$TARGET" == *armv6 ]]; then
+        CFLAGS+=" -mios-version-min=4.3 -stdlib=libstdc++"
+        CXXFLAGS+=" -mios-version-min=4.3 -stdlib=libstdc++"
+        LDFLAGS+=" -mios-version-min=4.3 -stdlib=libstdc++"
+    elif [[ "$TARGET" == *armv7 ]]; then
+        CFLAGS+=" -mios-version-min=7.0"
+        CXXFLAGS+=" -mios-version-min=7.0"
+        LDFLAGS+=" -mios-version-min=7.0"
+    elif [[ "$TARGET" == *armv7s ]]; then
+        CFLAGS+=" -mios-version-min=7.0"
+        CXXFLAGS+=" -mios-version-min=7.0"
+        LDFLAGS+=" -mios-version-min=7.0"
+    elif [[ "$TARGET" == *armv64 ]]; then
+        CFLAGS+=" -mios-version-min=7.0"
+        CXXFLAGS+=" -mios-version-min=7.0"
+        LDFLAGS+=" -mios-version-min=7.0"
+    elif [[ "$TARGET" == *armv64e ]]; then
+        CFLAGS+=" -mios-version-min=10"
+        CXXFLAGS+=" -mios-version-min=10"
+        LDFLAGS+=" -mios-version-min=10"
+    fi
 fi
 
 if [ $ISWCLANG -ne 0 ]; then
@@ -439,12 +471,19 @@ else
     MAKE=make
 fi
 
+export LD="ld"
+export AR="ar"
+export RANLIB="ranlib"
+export AS="as"
+export STRIP="strip"
+
 if [ -n "$HOSTPREFIX" ]; then
     ISCROSS=1
 
     export LD="${HOSTPREFIX}-ld"
     export AR="${HOSTPREFIX}-ar"
     export RANLIB="${HOSTPREFIX}-ranlib"
+    export AS="${HOSTPREFIX}-as"
     export STRIP="${HOSTPREFIX}-strip"
 
     which $LD &>/dev/null || {
@@ -529,7 +568,11 @@ if [ -z "$HOSTPREFIX" ] && [ $ISCLANG -eq 1 ]; then
 fi
 
 if [ -n "$ENABLE_LTO" ]; then
-    LTOFLAG="-flto=thin"
+    if [ $ISWCLANG -eq 1 ]; then
+        LTOFLAG="-flto"
+    else
+        LTOFLAG="-flto=thin"
+    fi
 
     if [[ $CC == *icc* ]]; then
         LTOFLAG="-ipo"
