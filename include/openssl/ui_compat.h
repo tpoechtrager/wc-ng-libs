@@ -1,7 +1,6 @@
-/* crypto/ui/ui.h */
-/*
- * Written by Richard Levitte (richard@levitte.org) for the OpenSSL project
- * 2001.
+/* $OpenBSD: ui_compat.h,v 1.4 2014/06/12 15:49:31 deraadt Exp $ */
+/* Written by Richard Levitte (richard@levitte.org) for the OpenSSL
+ * project 2001.
  */
 /* ====================================================================
  * Copyright (c) 2001 The OpenSSL Project.  All rights reserved.
@@ -58,29 +57,25 @@
  */
 
 #ifndef HEADER_UI_COMPAT_H
-# define HEADER_UI_COMPAT_H
+#define HEADER_UI_COMPAT_H
 
-# include <openssl/opensslconf.h>
-# include <openssl/ui.h>
+#include <openssl/opensslconf.h>
+#include <openssl/ui.h>
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
-/*
- * The following functions were previously part of the DES section, and are
- * provided here for backward compatibility reasons.
- */
+/* The following functions were previously part of the DES section,
+   and are provided here for backward compatibility reasons. */
 
-# define des_read_pw_string(b,l,p,v) \
-        _ossl_old_des_read_pw_string((b),(l),(p),(v))
-# define des_read_pw(b,bf,s,p,v) \
-        _ossl_old_des_read_pw((b),(bf),(s),(p),(v))
+#define des_read_pw_string(b,l,p,v) \
+	_ossl_old_des_read_pw_string((b),(l),(p),(v))
+#define des_read_pw(b,bf,s,p,v) \
+	_ossl_old_des_read_pw((b),(bf),(s),(p),(v))
 
-int _ossl_old_des_read_pw_string(char *buf, int length, const char *prompt,
-                                 int verify);
-int _ossl_old_des_read_pw(char *buf, char *buff, int size, const char *prompt,
-                          int verify);
+int _ossl_old_des_read_pw_string(char *buf, int length, const char *prompt, int verify);
+int _ossl_old_des_read_pw(char *buf, char *buff, int size, const char *prompt, int verify);
 
 #ifdef  __cplusplus
 }

@@ -6,7 +6,7 @@ PACKAGE="curl"
 
 if [ -z "$HUAWEI_TOOL" ]; then
     if [ -z "$SSLLIB" ]; then
-        SSLLIB="openssl"
+        SSLLIB="libressl"
     fi
 
     if [ ! -e "$TARGET_DIR/lib/libcrypto.a" ]; then

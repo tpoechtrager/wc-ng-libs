@@ -4,8 +4,8 @@ PACKAGE="libressl"
 
 . ${0%/*}/../common/common.inc.sh
 
-download "libressl" "http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.0.1.tar.gz" \
-  "" "sha256" "646adb1197fbe3a7542f18843d2b4adf857b77e50bb878b58f4e7dde5b7343cb"
+download "libressl" "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.1.0.tar.gz" \
+  "" "sha256" "f91aad0c8fb9cbc67c910ad6dcffb401a819b4fd122007ea7f978638db044cf6"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"
@@ -28,6 +28,8 @@ echo_action "building libressl"
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS
 sed -i'' -e "s/libcompatnoopt_la_CFLAGS = -O0/libcompatnoopt_la_CFLAGS = -O0 $ARCHFLAG/g" \
  crypto/Makefile
+sed -i'' -e "s/ tests//g" Makefile
+sed -i'' -e "s/ appsman//g" Makefile
 $MAKE -j $JOBS install
 popd
 
