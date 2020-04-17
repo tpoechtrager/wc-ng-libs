@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
-for x in echo $(ls target/linux32/lib/*.a); do
+
+libs=$(find . -name "*.a" -type f -exec basename {} \;|sort -u)
+
+for x in echo $libs; do
   ./common/copy-lib.sh $(basename $x);
 done

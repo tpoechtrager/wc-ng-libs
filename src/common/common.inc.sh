@@ -100,7 +100,11 @@ function download()
         wget_opts+=" --ca-certificate /usr/local/share/certs/ca-root-nss.crt"
     fi
 
-    [ -n "$3" ] && wget_opts+=" -O $3"
+    if [ -n "$3" ]; then
+        wget_opts+=" -O $3"
+    else
+        wget_opts+=" -O $(basename $2)"
+    fi
 
     if [ -f .sources ]; then
         for s in $(cat .sources); do
@@ -118,7 +122,7 @@ function download()
             echo_bold "downloading $2"
         fi
 
-        wget $wget_opts "$2" -O $(basename $2)
+        wget $wget_opts "$2"
 
         if [ -n "$4" ]; then
             have_prog "openssl" 1
@@ -294,6 +298,8 @@ TARGET_DIR="$ROOTDIR/target/${TARGET}${SUFFIX}"
 rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
 mkdir -p $TARGET_DIR
+mkdir -p $TARGET_DIR/include
+mkdir -p $TARGET_DIR/lib
 mkdir -p $SOURCES_DIR
 export PATH="$PATH:$TARGET_DIR/bin"
 export PKG_CONFIG=false

@@ -21,11 +21,11 @@ fi
 pushd target
 mkdir -p osx-fat${SUFFIX}/lib
 
-if [ -n "$USECLANG" ] && [ -n "$ENABLE_LTO" ]; then
+if [ -n "$USECLANG" ] && [ -n "$ENABLE_LTO" ] && [ 0 -ne 0 ]; then
     mkdir -p osx-fat osx-fat/lib osx32/lib osx64/lib
     bc2obj osx32_lto/lib/*.a -out-dir osx32/lib -pic -ar=$AR
     bc2obj osx64_lto/lib/*.a -out-dir osx64/lib -pic -ar=$AR
-    
+
     for f in osx32/lib/*.a
     do
         lib=$(basename $f)

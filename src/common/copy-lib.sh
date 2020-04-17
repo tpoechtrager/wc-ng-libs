@@ -37,8 +37,9 @@ function fix_llvm_ar()
     echo "fixing llvm ar ($1)"
 
     pushd $(dirname $1) &>/dev/null
+
     ar x $(basename $1)
-    RANLIB=true llvm-ar rcs $(basename $1) *o
+    RANLIB=true llvm-ar rcs $(basename $1) $(ls *.o) $(ls *.ao 2>/dev/null)
     if [[ $1 == *win/* ]]; then
       # FIXME: This is dumb.
       if [[ $1 == *win/x86_64* ]]; then
@@ -48,6 +49,7 @@ function fix_llvm_ar()
       fi
     fi
     rm -f *.o *.ao
+
     popd &>/dev/null
 }
 
@@ -55,6 +57,8 @@ function copy()
 {
    local a="$1/lib/$LIB"
    local b="$LIBDIR/$2/$LIB"
+
+   mkdir -p $(dirname $b)
 
    if [ -e $a ]; then
       echo "copying $a -> $b"

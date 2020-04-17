@@ -35,6 +35,7 @@ extract_archives
 
 pushd curl*
 echo_action "building curl"
+CC="$CC -pthread" \
 LDFLAGS="$LDFLAGS" \
 ./configure \
     --prefix=$TARGET_DIR \

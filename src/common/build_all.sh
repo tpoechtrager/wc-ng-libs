@@ -15,12 +15,10 @@ script="$lib/build.sh"
 TARGET=linux32 $script
 TARGET=linux64 $script
 
-mkdir -p target/linux32/lib target/linux64/lib
-
 ## Windows ##
 
-TARGET=mingw32 $script
-TARGET=mingw64 $script
+TARGET=w32-clang $script
+TARGET=w64-clang $script
 
 ## Darwin ##
 
@@ -28,6 +26,6 @@ TARGET=mingw64 $script
 
 ## FreeBSD ##
 
-USECLANG=1 HOSTPREFIX=amd64-pc-freebsd10.1 TARGET=freebsd64 $script
+USECLANG=1 HOSTPREFIX=amd64-pc-freebsd13.0 TARGET=freebsd64 $script
 
 done
