@@ -15,7 +15,7 @@ extract_archives
 mkdir -p $TARGET_DIR/include/osx-cpu-temp
 
 pushd osx-cpu-temp*
-make CC="$CC" CFLAGS="$CFLAGS" TARGETS=""
+make CC="$CC" CFLAGS="$CFLAGS" AR="$AR" TARGETS=""
 cp -v smc.a $TARGET_DIR/lib
 cp -v smc.h $TARGET_DIR/include/osx-cpu-temp
 popd
