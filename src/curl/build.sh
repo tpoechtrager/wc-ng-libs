@@ -35,6 +35,10 @@ extract_archives
 
 pushd curl*
 echo_action "building curl"
+if [ $ISOSX -eq 1 -a $ISCLANG -eq 1 ]; then
+    # get rid of __isOSVersionAtLeast()
+    CC="$CC -D__builtin_available\\(...\\)=0"
+fi
 CC="$CC -pthread" \
 LDFLAGS="$LDFLAGS" \
 ./configure \

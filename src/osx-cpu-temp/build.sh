@@ -2,7 +2,7 @@
 
 PACKAGE="osx-cpu-temp"
 
-PACKAGE_TARGETS="osx32 osx64"
+PACKAGE_TARGETS="osx32 osx64 osx64h"
 
 . ${0%/*}/../common/common.inc.sh
 

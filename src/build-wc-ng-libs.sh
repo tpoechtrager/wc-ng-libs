@@ -41,7 +41,7 @@ function build()
    done
 }
 
-USECLANG=1 build $libs
 USECLANG=1 ENABLE_LTO=1 build $libs
+USECLANG=1 build $libs
 
 ./common/copy-lib-x.sh

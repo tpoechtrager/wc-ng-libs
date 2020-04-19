@@ -214,7 +214,7 @@ if [ -z "$TARGET" ]; then
     echo "TARGET must be set!"
     echo "supported targets:"
     echo " linux32 linux64"
-    echo " osx32 osx64"
+    echo " osx32 osx64 osx64h"
     echo " ios-armXX"
     echo " freebsd32 freebsd64"
     echo " mingw32 mingw64"
@@ -454,6 +454,9 @@ then
             fi
             HOSTPREFIX="i386-apple-${OSXCROSS_TARGET}"
         fi
+
+        export OSXCROSS_NO_X86_64H_DEPLOYMENT_TARGET_WARNING=1
+
         ISOSXCROSS=1
     else
         CC="arm-apple-darwin11-clang"
