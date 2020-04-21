@@ -21,6 +21,11 @@ elif [ $IS64BIT -eq 1 ]; then
 fi
 fi
 
+if [ $ISOSX -eq 1 ] && [[ "$TARGET" != *64h ]]; then
+  # not supported until 10.12.1
+  export ac_cv_func_timingsafe_bcmp=no
+fi
+
 extract_archives
 
 pushd libressl*
