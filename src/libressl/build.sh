@@ -4,8 +4,8 @@ PACKAGE="libressl"
 
 . ${0%/*}/../common/common.inc.sh
 
-download "libressl" "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.1.0.tar.gz" \
-  "" "sha256" "f91aad0c8fb9cbc67c910ad6dcffb401a819b4fd122007ea7f978638db044cf6"
+download "libressl" "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.3.tar.gz" \
+  "" "sha256" "412dc2baa739228c7779e93eb07cd645d5c964d2f2d837a9fd56db7498463d73"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"
@@ -31,6 +31,7 @@ extract_archives
 pushd libressl*
 echo_action "building libressl"
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS
+sed -i'' -e "s/apps //g" Makefile
 sed -i'' -e "s/libcompatnoopt_la_CFLAGS = -O0/libcompatnoopt_la_CFLAGS = -O0 $ARCHFLAG/g" \
  crypto/Makefile
 sed -i'' -e "s/ tests//g" Makefile

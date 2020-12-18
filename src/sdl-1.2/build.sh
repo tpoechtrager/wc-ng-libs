@@ -12,8 +12,8 @@ fi
 download "libogg" "http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.xz" \
   "" "sha256" "c163bc12bc300c401b6aa35907ac682671ea376f13ae0969a220f7ddf71893fe"
 
-download "libvorbis" "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.tar.xz" \
-  "" "sha256" "2f05497d29195dc23ee952a24ee3973a74e6277569c4c2eca0ec5968e541f372"
+download "libvorbis" "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz" \
+  "" "sha256" "b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b"
 
 # SDL_image deps
 download "libjpeg" "http://www.ijg.org/files/jpegsrc.v9c.tar.gz" \
@@ -27,8 +27,8 @@ download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpn
 
 # SDL
 if [ $PACKAGE == "SDL2" ]; then
-  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.10.tar.gz" \
-    "" "sha256" "b4656c13a1f0d0023ae2f4a9cf08ec92fffb464e0f24238337784159b8b91d57"
+  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.12.tar.gz" \
+    "" "sha256" "349268f695c02efbc9b9148a70b85e58cefbbf704abd3e91be654db7f1e2c863"
 
   download "sdl2_image" "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz" \
     "" "sha256" "bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0"
@@ -83,8 +83,6 @@ popd
 # vorbis
 echo_action "building libvorbis"
 pushd libvorbis*
-patch -p0 < $PATCH_DIR/vorbis-configure.patch
-test $ISOSX -eq 1 && patch -p0 < $PATCH_DIR/vorbis-osx.patch
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS --with-pic
 $MAKE -j $JOBS install
 popd
@@ -130,8 +128,6 @@ pushd $(echo SDL*-* | tr ' ' '\n' | grep -v image | grep -v mixer|head -n1)
 CONFIGURE_FLAGS_OLD=$CONFIGURE_FLAGS
 if [ $PACKAGE == "SDL" ]; then
   patch -p1 < $PATCH_DIR/sdl-xdata32.patch
-else
-  patch -p0 < $PATCH_DIR/sdl2-darwin.patch
 fi
 if [ $ISOSX -eq 1 -o $ISARM -eq 1 ]; then
   CONFIGURE_FLAGS+=" --with-x=no"

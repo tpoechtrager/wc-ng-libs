@@ -8,12 +8,12 @@ PACKAGE_TARGETS="linux32 linux64"
 have_prog "flex" 1
 have_prog "bison" 1
 
-download "sensors" "https://ftp.gwdg.de/pub/linux/misc/lm-sensors/lm_sensors-3.4.0.tar.bz2" \
-  "" "sha256" "e0579016081a262dd23eafe1d22b41ebde78921e73a1dcef71e05e424340061f"
+download "sensors" "https://github.com/lm-sensors/lm-sensors/archive/V3-6-0/lm-sensors-3-6-0.tar.gz" \
+  "" "sha256" "0591f9fa0339f0d15e75326d0365871c2d4e2ed8aa1ff759b3a55d3734b7d197"
 
 extract_archives
 
-pushd lm_sensors*
+pushd lm-sensors*
 echo_action "building sensors"
 $MAKE -j $JOBS CC=$CC PREFIX=$TARGET_DIR CFLAGS="$CFLAGS -fPIC" LDFLAGS="$LDFLAGS -fPIC" SRCDIRS=lib install
 popd

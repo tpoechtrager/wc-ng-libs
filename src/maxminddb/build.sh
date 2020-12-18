@@ -4,8 +4,8 @@ PACKAGE="maxminddb"
 
 . ${0%/*}/../common/common.inc.sh
 
-download "maxminddb" "https://github.com/maxmind/libmaxminddb/releases/download/1.3.2/libmaxminddb-1.3.2.tar.gz" \
-  "libmaxminddb-1.3.2.tar.gz" "sha256" "e6f881aa6bd8cfa154a44d965450620df1f714c6dc9dd9971ad98f6e04f6c0f0"
+download "maxminddb" "https://github.com/maxmind/libmaxminddb/releases/download/1.4.3/libmaxminddb-1.4.3.tar.gz" \
+  "libmaxminddb-1.4.3.tar.gz" "sha256" "a5fdf6c7b4880fdc7620f8ace5bd5cbe9f65650c9493034b5b9fc7d83551a439"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"

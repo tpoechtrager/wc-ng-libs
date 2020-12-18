@@ -18,8 +18,8 @@ else
     CONFIGURE_FLAGS+=" --without-ssl"
 fi
 
-download "curl" "http://curl.haxx.se/download/curl-7.66.0.tar.gz" \
-  "" "sha256" "d0393da38ac74ffac67313072d7fe75b1fa1010eb5987f63f349b024a36b7ffb"
+download "curl" "http://curl.haxx.se/download/curl-7.74.0.tar.gz" \
+  "" "sha256" "e56b3921eeb7a2951959c02db0912b5fcd5fdba5aca071da819e1accf338bbd7"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"
