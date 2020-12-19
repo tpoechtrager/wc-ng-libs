@@ -154,6 +154,10 @@ if [ -n "$HUAWEI_TOOL" ]; then
     --with-x=no \
     --with-pic
 else
+if [ $ISLINUX -eq 1 ]; then
+  export PULSEAUDIO_CFLAGS="-D_REENTRANT "
+  export PULSEAUDIO_LIBS="-lpulse-simple -lpulse -pthread "
+fi
 ./configure \
   --prefix=$TARGET_DIR $CONFIGURE_FLAGS \
   --enable-video-directfb=no --enable-video-svga=no \
