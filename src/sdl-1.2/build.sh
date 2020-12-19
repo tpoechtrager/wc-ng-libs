@@ -6,6 +6,8 @@ else
   PACKAGE="SDL"
 fi
 
+./zlib-ng/build.sh
+
 . ${0%/*}/../common/common.inc.sh
 
 # SDL_mixer deps
@@ -18,9 +20,6 @@ download "libvorbis" "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.
 # SDL_image deps
 download "libjpeg" "http://www.ijg.org/files/jpegsrc.v9c.tar.gz" \
   "" "sha256" "650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122"
-
-download "zlib" "http://zlib.net/zlib-1.2.11.tar.gz" \
-  "" "sha256" "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1"
 
 download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpng-1.6.37.tar.xz" \
   "" "sha256" "505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca"
@@ -94,22 +93,6 @@ echo_action "building libjpeg"
 pushd jpeg*
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS --with-pic
 $MAKE -j $JOBS install
-popd
-
-# zlib
-echo_action "building zlib"
-pushd zlib*
-if [ $ISMINGW -ne 1 ]; then
-  ./configure
-  $MAKE -j $JOBS CFLAGS="$CFLAGS -fPIC" libz.a
-else
-  [[ -n "$HOST" ]] && PREFIX="${HOST}-"
-  make -f win32/Makefile.gcc PREFIX=$PREFIX CC=$CC CFLAGS="$CFLAGS" libz.a
-  unset PREFIX
-fi
-mkdir -p $TARGET_DIR/lib $TARGET_DIR/include
-$INSTALL -p -D libz.a $TARGET_DIR/lib/libz.a
-$INSTALL -p -D zlib.h zconf.h $TARGET_DIR/include
 popd
 
 # png

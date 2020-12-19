@@ -55,6 +55,7 @@ LDFLAGS="$LDFLAGS" \
     --without-libidn2 \
     --without-winidn \
     --without-libpsl \
+    --without-zstd \
     $CONFIGURE_FLAGS
 pushd lib
 $MAKE -j $JOBS install
