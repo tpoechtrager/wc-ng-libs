@@ -26,8 +26,8 @@ download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpn
 
 # SDL
 if [ $PACKAGE == "SDL2" ]; then
-  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.12.tar.gz" \
-    "" "sha256" "349268f695c02efbc9b9148a70b85e58cefbbf704abd3e91be654db7f1e2c863"
+  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.14.tar.gz" \
+    "" "sha256" "d8215b571a581be1332d2106f8036fcb03d12a70bae01e20f424976d275432bc"
 
   download "sdl2_image" "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz" \
     "" "sha256" "bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0"
