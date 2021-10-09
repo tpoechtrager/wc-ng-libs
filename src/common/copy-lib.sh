@@ -22,6 +22,10 @@ function strip_lib()
             i686-w64-mingw32-strip --strip-unneeded $2 ;;
         mingw64 | w64-clang)
             x86_64-w64-mingw32-strip --strip-unneeded $2 ;;
+        linux-arm64)
+            aarch64-unknown-linux-gnu-strip --strip-unneeded $2 ;;
+        linux-mips32be)
+            mips-openwrt-linux-strip --strip-unneeded $2 ;;
         linux*)
             strip --strip-unneeded $2 ;;
         *)
@@ -75,6 +79,8 @@ function copy()
 copy linux32 linux/i686/native
 copy linux64 linux/x86_64/native
 
+copy linux-arm64 linux/aarch64/native
+
 copy linux32_lto linux/i686/llvm-lto
 copy linux64_lto linux/x86_64/llvm-lto
 
@@ -92,5 +98,7 @@ copy w64-clang_lto win/x86_64/llvm-lto
 
 copy freebsd64 freebsd/amd64/native
 copy freebsd64_lto freebsd/amd64/llvm-lto
+
+copy linux-mips32be linux/mips32be/native
 
 

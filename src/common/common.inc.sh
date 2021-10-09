@@ -230,7 +230,7 @@ ISMINGW=0
 ISWCLANG=0
 
 case $TARGET in
-    linux32|linux64|linux-arm32|linux-arm64)
+    linux-mips32be|linux32|linux64|linux-arm32|linux-arm64)
         PLATFORM="Linux"
         ISLINUX=1 ;;
     osx32|osx64|osx64h)
@@ -371,6 +371,8 @@ else
     exit 1
 fi
 
+ARCHFLAG=""
+
 CFLAGS+=" $ARCHFLAG"
 CXXFLAGS+=" $ARCHFLAG"
 LDFLAGS+=" $ARCHFLAG"
@@ -434,7 +436,7 @@ then
     if [ $ISIOS -ne 1 ]; then
         have_prog "osxcross-conf" 1
         eval `osxcross-conf`
- 
+
         if [ $IS64BIT -eq 1 ]; then
             if [ -n "$USECLANG" ]; then
                 CC="x86_64-apple-${OSXCROSS_TARGET}-clang"

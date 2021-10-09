@@ -31,10 +31,6 @@ function build()
     TARGET=w32-clang $script
     TARGET=w64-clang $script
 
-    ## Darwin ##
-
-    ./common/build_osx_fat.sh $lib
-
     ## FreeBSD ##
 
     HOSTPREFIX=amd64-pc-freebsd13.0 TARGET=freebsd64 $script

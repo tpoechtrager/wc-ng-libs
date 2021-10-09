@@ -6,28 +6,28 @@ else
   PACKAGE="SDL"
 fi
 
-./zlib-ng/build.sh
+./zlib/build.sh
 
 . ${0%/*}/../common/common.inc.sh
 
 # SDL_mixer deps
-download "libogg" "http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.xz" \
-  "" "sha256" "c163bc12bc300c401b6aa35907ac682671ea376f13ae0969a220f7ddf71893fe"
+download "libogg" "https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-1.3.5.tar.xz" \
+  "" "sha256" "c4d91be36fc8e54deae7575241e03f4211eb102afb3fc0775fbbc1b740016705"
 
-download "libvorbis" "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz" \
+download "libvorbis" "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.7.tar.xz" \
   "" "sha256" "b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b"
 
 # SDL_image deps
-download "libjpeg" "http://www.ijg.org/files/jpegsrc.v9c.tar.gz" \
-  "" "sha256" "650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122"
+download "libjpeg" "https://www.ijg.org/files/jpegsrc.v9d.tar.gz" \
+  "" "sha256" "6c434a3be59f8f62425b2e3c077e785c9ce30ee5874ea1c270e843f273ba71ee"
 
 download "libpng" "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/libpng-1.6.37.tar.xz" \
   "" "sha256" "505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca"
 
 # SDL
 if [ $PACKAGE == "SDL2" ]; then
-  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.14.tar.gz" \
-    "" "sha256" "d8215b571a581be1332d2106f8036fcb03d12a70bae01e20f424976d275432bc"
+  download "sdl2" "https://www.libsdl.org/release/SDL2-2.0.16.tar.gz" \
+    "" "sha256" "65be9ff6004034b5b2ce9927b5a4db1814930f169c4b2dae0a1e4697075f287b"
 
   download "sdl2_image" "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz" \
     "" "sha256" "bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0"
@@ -72,7 +72,6 @@ extract_archives
 # ogg
 echo_action "building libogg"
 pushd libogg*
-patch -p0 < $PATCH_DIR/ogg-configure.patch
 patch -p0 < $PATCH_DIR/ogg-darwin.patch
 test $ISOSX -eq 1 && patch -p0 < $PATCH_DIR/ogg-osx-cflags.patch
 ./configure --prefix=$TARGET_DIR $CONFIGURE_FLAGS --with-pic
@@ -154,7 +153,7 @@ if [ -n "$HUAWEI_TOOL" ]; then
     --with-x=no \
     --with-pic
 else
-if [ $ISLINUX -eq 1 ]; then
+if [ $ISLINUX -eq 1 -a $ISARM -eq 0 ]; then
   export PULSEAUDIO_CFLAGS="-D_REENTRANT "
   export PULSEAUDIO_LIBS="-lpulse-simple -lpulse -pthread "
 fi
@@ -242,6 +241,8 @@ popd
 
 # SDL_net
 
+if [ 0 -ne 0 ]; then
+
 echo_action "building SDL_net"
 pushd SDL*net*
 ./configure \
@@ -249,5 +250,7 @@ pushd SDL*net*
 sed -i'' -e "s/am__EXEEXT_1/#am__EXEEXT_1/g" Makefile
 make -j $JOBS install
 popd
+
+fi
 
 finish_libs
