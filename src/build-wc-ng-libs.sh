@@ -23,7 +23,6 @@ function build()
 
     ## Linux ##
 
-    TARGET=linux32 $script
     TARGET=linux64 $script
 
     ## Windows ##
