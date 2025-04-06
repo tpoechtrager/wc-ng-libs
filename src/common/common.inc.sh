@@ -100,11 +100,23 @@ function download()
         wget_opts+=" --ca-certificate /usr/local/share/certs/ca-root-nss.crt"
     fi
 
+    local filename
+
     if [ -n "$3" ]; then
-        wget_opts+=" -O $3"
+        filename=$(basename "$3")
     else
-        wget_opts+=" -O $(basename $2)"
+        filename=$(basename "$2")
     fi
+
+    wget_opts+=" -O $filename"
+    
+    local lockfile="/tmp/download.${filename}.lock"
+    exec 9>"$lockfile"
+    flock 9
+
+    local lockfile="/tmp/download.${lockname}.lock"
+    exec 9>"$lockfile"
+    flock 9
 
     if [ -f .sources ]; then
         for s in $(cat .sources); do
@@ -126,14 +138,6 @@ function download()
 
         if [ -n "$4" ]; then
             have_prog "openssl" 1
-
-            local filename
-
-            if [ -n "$3" ]; then
-                filename=$(basename $3)
-            else
-                filename=$(basename $2)
-            fi
 
             local filehash=$(openssl $4 $filename | awk '{print $2}')
 
@@ -427,7 +431,7 @@ else
 fi
 
 if [ $ISOSX -eq 1 ]; then
-    export MACOSX_DEPLOYMENT_TARGET=10.6
+    export MACOSX_DEPLOYMENT_TARGET=10.7
 fi
 
 if [ $ISOSX -eq 1 -a $NATIVE_PLATFORM != "Darwin" -a -z "$HOSTPREFIX" ];

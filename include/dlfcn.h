@@ -17,10 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef _WIN32
-#include_next <dlfcn.h>
-#else
-
 #ifndef DLFCN_H
 #define DLFCN_H
 
@@ -55,4 +51,3 @@ char *dlerror( void );
 #endif
 
 #endif /* DLFCN_H */
-#endif /* ! _WIN32 */

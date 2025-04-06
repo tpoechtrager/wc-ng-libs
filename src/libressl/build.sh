@@ -4,8 +4,8 @@ PACKAGE="libressl"
 
 . ${0%/*}/../common/common.inc.sh
 
-download "libressl" "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.3.tar.gz" \
-  "" "sha256" "412dc2baa739228c7779e93eb07cd645d5c964d2f2d837a9fd56db7498463d73"
+download "libressl" "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.0.0.tar.gz" \
+  "" "sha256" "4d841955f0acc3dfc71d0e3dd35f283af461222350e26843fea9731c0246a1e4"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"

@@ -18,8 +18,8 @@ else
     CONFIGURE_FLAGS+=" --without-ssl"
 fi
 
-download "curl" "http://curl.haxx.se/download/curl-7.79.1.tar.gz" \
-  "" "sha256" "370b11201349816287fb0ccc995e420277fbfcaf76206e309b3f60f0eda090c2"
+download "curl" "https://curl.haxx.se/download/curl-8.13.0.tar.gz" \
+  "" "sha256" "c261a4db579b289a7501565497658bbd52d3138fdbaccf1490fa918129ab45bc"
 
 if [ $ISMINGW -eq 1 ]; then
     CONFIGURE_FLAGS+=" --disable-shared --enable-static"
@@ -29,6 +29,10 @@ fi
 
 if [ $ISMINGW -eq 0 -a $ISFBSD -eq 0 ]; then
     LDFLAGS+=" -ldl"
+fi
+
+if [ $ISMINGW -eq 1 ]; then
+    LDFLAGS+=" -lssl -lcrypto -lbcrypt"
 fi
 
 extract_archives
