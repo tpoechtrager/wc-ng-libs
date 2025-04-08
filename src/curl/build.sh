@@ -60,6 +60,7 @@ LDFLAGS="$LDFLAGS" \
     --without-winidn \
     --without-libpsl \
     --without-zstd \
+    --without-nghttp2 \
     $CONFIGURE_FLAGS
 pushd lib
 $MAKE -j $JOBS install
