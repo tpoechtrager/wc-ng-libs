@@ -4,6 +4,8 @@ set -e
 
 pushd "${0%/*}" &>/dev/null
 
+. common/bitcode2native.sh
+
 unset ENABLE_LTO
 unset HOSTPREFIX
 unset CC CXX
@@ -49,15 +51,13 @@ function build_libraries() {
 pid_lto=$!
 child_pids+=($pid_lto)
 
-# Run non-LTO build in background
-(
-  USECLANG=1 build_libraries
-) &
-pid_nolto=$!
-child_pids+=($pid_nolto)
-
 # Wait and fail fast
 wait $pid_lto || cleanup
-wait $pid_nolto || cleanup
 
 ./common/copy-lib-x.sh
+
+pushd .. &>/dev/null
+
+rm -rf win/i686/native && bitcode_to_native ../win/i686/llvm-lto/*.a --output-directory=../win/i686/native -O3
+rm -rf win/x86_64/native && bitcode_to_native ../win/x86_64/llvm-lto/*.a --output-directory=../win/x86_64/native -O3
+rm -rf linux/x86_64/native && bitcode_to_native ../linux/x86_64/llvm-lto/*.a --fpic --output-directory=../linux/x86_64/native -O3

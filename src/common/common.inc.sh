@@ -583,7 +583,7 @@ if [ -z "$HOSTPREFIX" ] && [ $ISCLANG -eq 1 ]; then
 fi
 
 if [ -n "$ENABLE_LTO" ]; then
-    if [ $ISWCLANG -eq 1 ]; then
+    if [ $ISWCLANG -eq 1 ] || [ $ISGCC -eq 1 ]; then
         LTOFLAG="-flto"
     else
         LTOFLAG="-flto=thin"
